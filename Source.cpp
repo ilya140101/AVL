@@ -8,7 +8,9 @@
 #include <locale.h>
 #include <time.h>
 #include <ctime>
+#include<chrono>
 using namespace std;
+using namespace chrono;
 
 struct node {
 	int key;
@@ -402,10 +404,13 @@ void menu() {// меню выбора
 		bool t;
 		FILE *file = fopen("input.txt", "w");
 		for (int i = 0; i < n; i++) {
-			int x = rand()*rand();
+			int x = rand()*rand()*rand();
 			t = add(x);
+			if(i%1000==0)
+			printf("\r%f", (float(i) / n)*100);
 			//fprintf(file, "%d ", x);
 		}
+		cout << endl;
 		fclose(file);
 	}
 	cout << "Выводить исходные данные? 1)Да 2)Нет.\n";
@@ -425,17 +430,17 @@ void menu() {// меню выбора
 	cout << endl << "Введите ключ для поиска со вставкой: ";
 	cin >> key;
 
-	unsigned int start_time = clock();
 	if (want == 2)
 		progress = true;
+	auto start = steady_clock::now();
 	bool find = add(key);
+	auto end = steady_clock::now();
 	if (find)
 		cout << "\nУзел был найден.\n";
 	else 
 		cout << "\nУзел не был найден.\n";
-	unsigned int end_time = clock();
 	if (want == 1)
-		cout << double(end_time - start_time) / CLOCKS_PER_SEC << endl;
+		cout << duration_cast<nanoseconds>(end - start).count()/ 1000000000 << endl;
 	if (output == 1) {
 		cout << "Полученное дерево:\n";
 		if (flag == 1)
