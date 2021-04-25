@@ -31,7 +31,6 @@ void outputSpace(int key);// вывод пробелов между элементами
 void output2(node *tmp, int cnt);// горизонтальный вывод
 void output1();// вертикальный вывод
 int maxDepth(node *tmp, int cnt);// максимальная глубина дерева
-int minDepth(node *tmp, int min);// минимальная глубина дерева
 int quantity(int key);// длина числа
 bool add(int key);// добавление узла в дерево
 void menu();// меню выбора
@@ -314,9 +313,6 @@ int maxDepth(node *tmp, int cnt)// определение макс глубины
 	else
 		return max(maxDepth(tmp->leftSon, cnt + 1), maxDepth(tmp->rightSon, cnt + 1));
 }
-int minDepth(node *tmp, int min) {
-	return 0;
-}
 int quantity(int key)// определение длины числа
 {
 	int cnt = 1;
@@ -444,7 +440,7 @@ void menu() {// меню выбора
 	else 
 		cout << "\nУзел не был найден.\n";
 	if (want == 1)
-		cout << duration_cast<nanoseconds>(end - start).count() << " наносекунд" << endl;
+		cout << duration_cast<nanoseconds>(end - start).count()/ 1000000000 << endl;
 	if (output == 1) {
 		cout << "Полученное дерево:\n";
 		if (flag == 1)

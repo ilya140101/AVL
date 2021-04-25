@@ -1,5 +1,5 @@
 ﻿  Source.cpp
-c:\users\ilya1\source\repos\avl\avl\source.cpp(284): warning C4244: аргумент: преобразование "double" в "int", возможна потеря данных
-c:\users\ilya1\source\repos\avl\avl\source.cpp(304): warning C4244: аргумент: преобразование "double" в "int", возможна потеря данных
-c:\users\ilya1\source\repos\avl\avl\source.cpp(468): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+c:\users\ilya1\source\repos\avl\avl\source.cpp(283): warning C4244: аргумент: преобразование "double" в "int", возможна потеря данных
+c:\users\ilya1\source\repos\avl\avl\source.cpp(303): warning C4244: аргумент: преобразование "double" в "int", возможна потеря данных
+c:\users\ilya1\source\repos\avl\avl\source.cpp(464): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
   AVL.vcxproj -> C:\Users\Ilya1\source\repos\AVL\Debug\AVL.exe
