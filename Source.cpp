@@ -57,14 +57,14 @@ node *find(int key)// поиск узла или места дл€ вставки
 {
 
 	node *tmp = Head;
-	if (tmp == NULL){
+	if (tmp == NULL) {
 		Head = createNewNode(key);
 		return Head;
 	}
 	while (true)
 	{
-		if (tmp->key < key)	{
-			if (!tmp->rightSon){
+		if (tmp->key < key) {
+			if (!tmp->rightSon) {
 				tmp->rightSon = createNewNode(key);
 				tmp->rightSon->father = tmp;
 				return tmp->rightSon;
@@ -72,8 +72,8 @@ node *find(int key)// поиск узла или места дл€ вставки
 			else
 				tmp = tmp->rightSon;
 		}
-		if (tmp->key > key){
-			if (!tmp->leftSon){
+		if (tmp->key > key) {
+			if (!tmp->leftSon) {
 				tmp->leftSon = createNewNode(key);
 				tmp->leftSon->father = tmp;
 				return tmp->leftSon;
@@ -89,35 +89,35 @@ void balance(node *tmp)// пересчет балансов и вызов балансировок
 {
 	if (!tmp)
 		return;
-	while (true){
+	while (true) {
 		if (tmp == Head)
 			return;
-		if (tmp->father->key > tmp->key){
+		if (tmp->father->key > tmp->key) {
 			tmp = tmp->father;
 			tmp->balance--;
 			if (tmp->balance == 0)
 				return;
-			if (tmp->balance == -2){
+			if (tmp->balance == -2) {
 				tmp = tmp->leftSon;
 				if (tmp->balance == -1)
 					leftTurn(tmp);
-				else{
+				else {
 					tmp = tmp->rightSon;
 					leftBigTurn(tmp);
 				}
 				return;
 			}
 		}
-		else{
+		else {
 			tmp = tmp->father;
 			tmp->balance++;
 			if (tmp->balance == 0)
 				return;
-			if (tmp->balance == 2){
+			if (tmp->balance == 2) {
 				tmp = tmp->rightSon;
 				if (tmp->balance == 1)
 					rightTurn(tmp);
-				else{				
+				else {
 					tmp = tmp->leftSon;
 					rightBigTurn(tmp);
 				}
@@ -153,7 +153,7 @@ void rightTurn(node *tmp) {// правый поворот
 }
 void rightBigTurn(node *tmp)// правый большой поворот
 {
- 	node *X = tmp, *B = tmp->father, *A = B->father;
+	node *X = tmp, *B = tmp->father, *A = B->father;
 	if (A == Head) {
 		Head = X;
 		X->father = NULL;
@@ -267,7 +267,7 @@ void outputSpace(int key)// вывод пробелов
 }
 void output2(node *tmp, int cnt)// горизонтальный вывод
 {
-	if (tmp){
+	if (tmp) {
 		output2(tmp->rightSon, cnt + 1);
 		outputSpace(cnt);
 		cout << tmp->key << endl;
@@ -280,9 +280,9 @@ void output1()// вертикальный вывод
 	queue < node > queue;
 	queue.push(*Head);
 	int n = maxDepth(Head, 0);
-	for (int i = n; i > 0; i--)	{
+	for (int i = n; i > 0; i--) {
 		outputSpace(pow(2, i - 1) - 1);
-		for (int j = 0; j < pow(2, n - i); j++)	{
+		for (int j = 0; j < pow(2, n - i); j++) {
 			node tmp = queue.front();
 			queue.pop();
 			if (tmp.leftSon)
@@ -313,6 +313,39 @@ int maxDepth(node *tmp, int cnt)// определение макс глубины
 		return cnt;
 	else
 		return max(maxDepth(tmp->leftSon, cnt + 1), maxDepth(tmp->rightSon, cnt + 1));
+}
+node *maxDepthNode() {// определение макс глубины
+
+	queue < node > queue;
+	queue.push(*Head);
+	while (true) {
+		node tmp = queue.front();
+		queue.pop();
+		if (tmp.leftSon)
+			queue.push(*tmp.leftSon);
+		if (tmp.rightSon)
+			queue.push(*tmp.rightSon);
+		if (queue.empty())
+			return &tmp;
+	}
+}
+node *minDepthNode() {// определение мин глубины
+
+	queue < node > queue;
+	queue.push(*Head);
+	while (true) {
+		node tmp = queue.front();
+		queue.pop();
+		if (tmp.leftSon)
+			queue.push(*tmp.leftSon);
+		else
+			return &tmp;
+		if (tmp.rightSon)
+			queue.push(*tmp.rightSon);
+		else
+			return &tmp;
+
+	}
 }
 int minDepth(node *tmp, int min) {
 	return 0;
@@ -351,7 +384,7 @@ bool add(int key) {// добавление узла
 	return false;
 }
 void menu() {// меню выбора
-	int n = 0, input = -1, output = -1, want = -1, flag = 0, key=0, source=0;// input- способ ввода, output- способ вывода 
+	int n = 0, input = -1, output = -1, want = -1, flag = 0, key = 0, source = 0;// input- способ ввода, output- способ вывода 
 	// want- способ выполнени€, flag- способ вывода, source- выводить исходное
 	cout << "¬ведите количество элементов в дереве: ";
 	cin >> n;
@@ -408,11 +441,9 @@ void menu() {// меню выбора
 		bool t;
 		FILE *file = fopen("input.txt", "w");
 		for (int i = 0; i < n; i++) {
-			int x = rand()*rand()*rand();
-			t = add(x);
-			if(i%1000==0)
-			printf("\r%f", (float(i) / n)*100);
-			//fprintf(file, "%d ", x);
+			int x = rand()*rand();
+			fprintf(file, "%d ", x);
+			t = add(x % 100);
 		}
 		cout << endl;
 		fclose(file);
@@ -423,7 +454,7 @@ void menu() {// меню выбора
 		cout << "¬веден некоректный номер.";
 		return;
 	}
-	
+
 	if (source == 1) {
 		cout << "»сходные данные:\n";
 		if (flag == 1)
@@ -431,9 +462,11 @@ void menu() {// меню выбора
 		else
 			output2(Head, 0);
 	}
-	cout << endl << "¬ведите ключ дл€ поиска со вставкой: ";
-	cin >> key;
-
+	cout << endl << "max: " << maxDepthNode()->key << endl;
+	cout << endl << "min: " << minDepthNode()->key << endl;
+	/*cout << endl << "¬ведите ключ дл€ поиска со вставкой: ";
+	cin >> key;*/
+	key = maxDepthNode()->key;
 	if (want == 2)
 		progress = true;
 	auto start = steady_clock::now();
@@ -441,7 +474,7 @@ void menu() {// меню выбора
 	auto end = steady_clock::now();
 	if (find)
 		cout << "\n”зел был найден.\n";
-	else 
+	else
 		cout << "\n”зел не был найден.\n";
 	if (want == 1)
 		cout << duration_cast<nanoseconds>(end - start).count() << " наносекунд" << endl;
@@ -465,6 +498,7 @@ void menu() {// меню выбора
 }
 int main()
 {
+	freopen("test.txt", "r", stdin);
 	srand(time(NULL));
 	setlocale(LC_ALL, "RUS");
 	maxLength = 0;
@@ -473,7 +507,9 @@ int main()
 	Empty->leftSon = NULL;
 	Empty->rightSon = NULL;
 	Empty->mark = true;
-	
+
 	menu();
+
 	system("pause");
+	Sleep(10000);
 }
