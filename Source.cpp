@@ -2,6 +2,7 @@
 #include <iostream>
 #include <queue>
 #include <algorithm>
+#include <fstream>
 #include <string.h>
 #include <stdlib.h>
 #include <Windows.h>
@@ -11,7 +12,8 @@
 #include<chrono>
 using namespace std;
 using namespace chrono;
-
+int FLAG = 2;//0- минимальные с положительным, 1- минимальные с отриц, 2- максимальные, 3- средние
+//4- с клавиатуры
 struct node {
 	int key;
 	int balance;
@@ -35,13 +37,32 @@ int minDepth(node *tmp, int min);// минимальная глубина дерева
 int quantity(int key);// длина числа
 bool add(int key);// добавление узла в дерево
 void menu();// меню выбора
+node *maxDepthNode();
+node *minDepthNode();
+
 
 node *Head = NULL;// корень узла
 node *Empty;// пустой узел (для вывода)
 int maxLength;// максимальная длина числа
 bool progress = false;// для вывода процента выполнения
+double mainPerformance=23704650;
+double performance=0;
 
-
+bool interval1(int n) {
+	if (n < 2048)
+		return true;
+	return false;
+}
+bool interval2(int n) {
+	if (n >= 2048 && n < 65536)
+		return true;
+	return false;
+}
+bool interval3(int n) {
+	if (n >= 65536)
+		return true;
+	return false;
+}
 node *createNewNode(int key)// Метод создающий новый узел
 {
 	node *tmp;
@@ -383,7 +404,16 @@ bool add(int key) {// добавление узла
 	}
 	return false;
 }
+int testPerformance() {
+	auto start = steady_clock::now();
+	int a = 1;
+	for (int i = 0; i < 10000000; i++)
+		a *= 2;
+	auto end = steady_clock::now();
+	return duration_cast<nanoseconds>(end - start).count();
+}
 void menu() {// меню выбора
+
 	int n = 0, input = -1, output = -1, want = -1, flag = 0, key = 0, source = 0;// input- способ ввода, output- способ вывода 
 	// want- способ выполнения, flag- способ вывода, source- выводить исходное
 	cout << "Введите количество элементов в дереве: ";
@@ -392,7 +422,7 @@ void menu() {// меню выбора
 		cout << "Введен некоректный параметр.";
 		return;
 	}
-
+	int time = 0;
 	cout << endl << "Выберите способа ввода данных:\n1) С клавиатуры 2) Из файла(input.txt, после данных в файле нужно поставь Enter) 3) Датчиком случайных чисел.\n";
 	cin >> input;
 	if (input < 1 || input > 3) {
@@ -400,7 +430,7 @@ void menu() {// меню выбора
 		return;
 	}
 
-	cout << "Выберите способ вывода данных:\n1) На экран 2) В файл(output.txt) 3) Не выводить.\n";
+		cout << "Выберите способ вывода данных:\n1) На экран 2) В файл(output.txt) 3) Не выводить.\n";
 	cin >> output;
 	if (output < 1 || output > 3) {
 		cout << "Введен некоректный номер.";
@@ -441,9 +471,9 @@ void menu() {// меню выбора
 		bool t;
 		FILE *file = fopen("input.txt", "w");
 		for (int i = 0; i < n; i++) {
-			int x = rand()*rand();
+			int x = rand()*rand()*rand();
 			fprintf(file, "%d ", x);
-			t = add(x % 100);
+			t = add(x);
 		}
 		cout << endl;
 		fclose(file);
@@ -462,22 +492,66 @@ void menu() {// меню выбора
 		else
 			output2(Head, 0);
 	}
-	cout << endl << "max: " << maxDepthNode()->key << endl;
-	cout << endl << "min: " << minDepthNode()->key << endl;
-	/*cout << endl << "Введите ключ для поиска со вставкой: ";
-	cin >> key;*/
-	key = maxDepthNode()->key;
+	if (interval1(n)) {
+		cout << endl << "Минимальное время (с положительным поиском): " << 856*performance << " наносекунд" << endl;
+		cout << endl << "Минимальное время (с отрицательным поиском): " << (179 * log2(n) + 159)*performance << " наносекунд" << endl;
+		cout << endl << "Среднее время: " << (288 * log2(n) + 545)*performance << " наносекунд" << endl;
+		cout << endl << "Максимальное время: " << (591 * log2(n) - 519)*performance << " наносекунд" << endl;
+
+
+	}
+	if (interval2(n)) {
+		cout << endl << "Минимальное время (с положительным поиском): " << 908 * performance << " наносекунд" << endl;
+		cout << endl << "Минимальное время (с отрицательным поиском): " << (227 * log2(n) + 69)*performance << " наносекунд" << endl;
+		cout << endl << "Среднее время: " << (373 * log2(n) + 249)*performance << " наносекунд" << endl;
+		cout << endl << "Максимальное время: " << (369 * log2(n) - 184)*performance << " наносекунд" << endl;
+	}
+	if (interval3(n)) {
+		cout << endl << "Минимальное время (с положительным поиском): " << 904 * performance << " наносекунд" << endl;
+		cout << endl << "Минимальное время (с отрицательным поиском): " << (265 * log2(n) + 302)*performance << " наносекунд" << endl;
+		cout << endl << "Среднее время: " << (297 * log2(n) - 83)*performance << " наносекунд" << endl;
+		cout << endl << "Максимальное время: " << (518 * log2(n) - 1173)*performance << " наносекунд" << endl;
+	}
+
+	cout << endl << "Самая дальняя ветка для вставки: " << maxDepthNode()->key << endl;
+	cout << endl << "Самая близкая ветка для вставки: " << minDepthNode()->key ;
+	if (minDepthNode()->leftSon)
+		cout << " (" << minDepthNode()->key + 1 << ")" << endl;
+	else
+		cout << " (" << minDepthNode()->key - 1 << ")" << endl;
+	cout << endl << "Введите ключ для поиска со вставкой: ";
+	switch (FLAG)
+	{
+	case 0: key = Head->key; break;
+	case 1:
+		if (minDepthNode()->leftSon)
+			key = minDepthNode()->key + 1;
+		else
+			key = minDepthNode()->key - 1;
+		cout << key;
+		break;
+	case 2: key = maxDepthNode()->key + 1;
+		cout << key;
+		break;
+	case 3: key = rand()*rand();
+		cout << key;
+		break;
+	case 4: cin >> key;
+		break;
+	}
 	if (want == 2)
 		progress = true;
 	auto start = steady_clock::now();
 	bool find = add(key);
 	auto end = steady_clock::now();
-	if (find)
+	if (find) {
 		cout << "\nУзел был найден.\n";
+	}
 	else
 		cout << "\nУзел не был найден.\n";
 	if (want == 1)
-		cout << duration_cast<nanoseconds>(end - start).count() << " наносекунд" << endl;
+		time = duration_cast<nanoseconds>(end - start).count();
+	cout << "Получанное время: " << time << " наносекунд"<< endl;
 	if (output == 1) {
 		cout << "Полученное дерево:\n";
 		if (flag == 1)
@@ -498,7 +572,6 @@ void menu() {// меню выбора
 }
 int main()
 {
-	freopen("test.txt", "r", stdin);
 	srand(time(NULL));
 	setlocale(LC_ALL, "RUS");
 	maxLength = 0;
@@ -508,8 +581,9 @@ int main()
 	Empty->rightSon = NULL;
 	Empty->mark = true;
 
+	performance = testPerformance() / mainPerformance;
 	menu();
 
 	system("pause");
-	Sleep(10000);
+
 }
